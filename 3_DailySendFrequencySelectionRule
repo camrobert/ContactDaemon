@@ -1,0 +1,28 @@
+#Daily Send Frequency Selection Rule
+If your sends are not targeting a central or master customer Data Extension - and you are doing some pre-send processing - then you can add some additional send frequency checks into your selection query to exclude over-saturated customers.
+
+#Pros:
+Customisable query for each activity; including the ability to count Non-Commercial sends
+Query runs at time of selection and is more forgiving of busy send schedules
+
+#Cons:
+Can slow down subscriber selection speed in larger accounts
+Code needs to be put in every selection query, making it harder to deploy & change.
+
+#Ideal Situations:
+Scheduled Sends (Single-Email Journeys & Automations that are staggered across the day)
+Guided Sends using custom Sending DEs
+
+#Method:
+While building the single-use DE for each send, add the following SQL to the end of the query to check for oversaturation:
+
+  INNER JOIN (
+  Select
+  SubscriberKey
+  ,Count(*) as ‘Count’
+  FROM ent.[_sent] 
+  WHERE EventDate > DATEADD(day,-1,GETDATE())
+  ) s ON s.SubscriberKey = sub.SubscriberKey
+  WHERE s.Count < 3
+
+Where “sub” is the table alias for your selected data, and the subscriber must have “less than 3” sends in a 24 hour period.
