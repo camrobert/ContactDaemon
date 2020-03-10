@@ -2,7 +2,7 @@
 A series of suppression and selection methods to assist in subscriber email frequency capping
 3 Solutions are identified with various practical applications:
 
-# 1:At Send Frequency Suppression Script
+# 1: At Send Frequency Suppression Script
 This is a foolproof way to ensure no subscriber ever receives more than the allotted number of emails per day.
 It requires some light DE and AMPScript development, however it scales well without performance degradation and allows for ad-hoc workarounds.
 
