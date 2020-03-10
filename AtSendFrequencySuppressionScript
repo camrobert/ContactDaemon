@@ -1,0 +1,30 @@
+#At Send Frequency Suppression Script
+You can ensure subscribers do not receive more than a set number of communications per day by creating an exclusion script and a custom data extension. This solution is designed to be lightweight, easy to replicate and fast at scale.
+
+#Pros:
+Guaranteed daily frequency suppression
+Easy to set up & manage
+
+#Cons:
+Simple rules means it’s difficult to customise
+Can cause a slight delay in send time
+
+#Ideal Situations:
+If you must ensure subscribers don’t receive more than an alloted daily limit.
+
+#1: 
+Create a Data Extension called “SubscriberFrequency” with a 7 day Data Retention Policy, and the following fields:
+LogKey [Text] = Concat(Format(Now(), "YYYYMMddHHmmss"),”|”,_subscriberkey)
+DaySubscriberKey [Text] = Concat(Format(Now(), "YYYYMMdd"),”|”,_subscriberkey)
+SubscriberKey [Text] = _subscriberkey
+EventTime [DateTime] = Now()
+
+#2: 
+Insert the following AMPScript into your emails. You can do this quickly by adding it to any Primary Email Template or Header/Footer Content that you use in every production Email.
+%%[InsertDE(SubscriberFrequency,'LogKey',Concat(Format(Now(), "YYYYMMddHHmmss"),”|”,_subscriberkey), 'DaySubscriberKey',Concat(Format(Now(), "YYYYMMdd"),”|”,_subscriberkey), ‘SubscriberKey’,_subscriberkey,'EventTime',NOW())]%%
+
+#3: 
+In the Exclusion Script section section of each email, paste the following AMPScript:
+(RowCount(LookupRows('SubscriberFrequency','DaySubscriberKey',Concat(Format(Now(), "YYYYMMdd"),”|”,_subscriberkey))) < 3)
+Where 3 is the Maximum number of emails the Subscriber is able to be sent per day. The Statement above will evaluate as TRUE while the Subscriber has received less than 3 emails in the same day.
+Note: The DateAdd() function can be used to alter the timezone as required. Otherwise you could reference stored timezones for each subscriber.
