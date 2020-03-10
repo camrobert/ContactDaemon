@@ -1,0 +1,18 @@
+#Daily Send Frequency Suppression DE Automation
+If you need to control how many sends each subscriber receives over a period of time to ensure they are not over saturated, you can build an Automated Send Suppression Log to update a list of subscribers who should not be sent more emails during that period.
+
+#Pros:
+Automated
+Very easy to set up, manage and customise
+Ability to overwrite for critical sends
+
+#Cons:
+Automation is not real time so multiple simultaneous activities can break through.
+One frequency rule for all sends
+
+#Ideal Situations:
+Scheduled sends (Single-Email Journeys & Automations that are staggered across the day)
+Guided Sends using a Master DE
+
+#Method:
+Using an Automation, write a Query Activity that produces a Count(*) of all SubscriberKeys that have over a specified number of rows in the ent.[_Sent] data view in the last 24 hours, and overwrite the results to a “Suppression” Data Extension. Add this DE to the Suppressions for every send, and re-run the automation as frequently as required.
